@@ -20,7 +20,7 @@
 :root{
   --bg:#edf0f3; --surface:#ffffff; --surface-2:#f6f8fa; --ink:#14202a; --muted:#5a6976; --line:#d5dce2;
   --brand:#14324a; --brand-ink:#ffffff; --signal:#e36414; --signal-ink:#ffffff;
-  --ok:#1d7a4c; --bad:#b3261e; --new:#6d45c9; --ok-bg:#e2f2e9; --bad-bg:#fbe6e4; --new-bg:#eee7fb; --track:#dde4ea;
+  --ok:#1d7a4c; --bad:#b3261e; --cblue:#2a6fc0; --new:#6d45c9; --ok-bg:#e2f2e9; --bad-bg:#fbe6e4; --new-bg:#eee7fb; --track:#dde4ea;
   --shadow:0 1px 2px rgba(20,32,42,.06),0 4px 14px rgba(20,32,42,.06);
   --f-display:"Barlow Condensed","Arial Narrow",sans-serif;
   --f-body:"Source Sans 3","Segoe UI",system-ui,sans-serif;
@@ -29,12 +29,12 @@
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
   --bg:#0d141a; --surface:#16212a; --surface-2:#1c2833; --ink:#e6ecf1; --muted:#98a8b4; --line:#273541;
   --brand:#1b4566; --brand-ink:#f2f7fb; --signal:#ff8a3d; --signal-ink:#1a0c02;
-  --ok:#5cc58f; --bad:#ff7b72; --new:#b79bff; --ok-bg:#15301f; --bad-bg:#371a19; --new-bg:#271f3d; --track:#24313c;
+  --ok:#5cc58f; --bad:#ff7b72; --cblue:#5aa2f0; --new:#b79bff; --ok-bg:#15301f; --bad-bg:#371a19; --new-bg:#271f3d; --track:#24313c;
   --shadow:0 1px 2px rgba(0,0,0,.3); color-scheme:dark}}
 :root[data-theme="dark"]{
   --bg:#0d141a; --surface:#16212a; --surface-2:#1c2833; --ink:#e6ecf1; --muted:#98a8b4; --line:#273541;
   --brand:#1b4566; --brand-ink:#f2f7fb; --signal:#ff8a3d; --signal-ink:#1a0c02;
-  --ok:#5cc58f; --bad:#ff7b72; --new:#b79bff; --ok-bg:#15301f; --bad-bg:#371a19; --new-bg:#271f3d; --track:#24313c;
+  --ok:#5cc58f; --bad:#ff7b72; --cblue:#5aa2f0; --new:#b79bff; --ok-bg:#15301f; --bad-bg:#371a19; --new-bg:#271f3d; --track:#24313c;
   --shadow:0 1px 2px rgba(0,0,0,.3); color-scheme:dark}
 
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -181,6 +181,28 @@ button{cursor:pointer}
 .field textarea{border:1.5px solid var(--line);background:var(--surface);border-radius:10px;padding:12px;width:100%;min-height:140px;resize:vertical;line-height:1.5}
 .fab{position:fixed;right:max(16px,calc(env(safe-area-inset-right,0px) + 16px));bottom:calc(80px + env(safe-area-inset-bottom,0px));z-index:6;border:0;border-radius:16px;background:var(--signal);color:var(--signal-ink);padding:14px 18px;font-family:var(--f-display);font-weight:700;font-size:1.05rem;text-transform:uppercase;letter-spacing:.04em;box-shadow:0 6px 18px rgba(0,0,0,.22)}
 .search{border:1.5px solid var(--line);background:var(--surface);border-radius:10px;padding:11px 12px;width:100%}
+.courtwrap{border:0;background:var(--surface-2);border-radius:12px;padding:8px;width:100%;display:block;cursor:zoom-in}
+.courtwrap svg{width:100%;height:auto;display:block}
+.court-line{fill:none;stroke:var(--muted);stroke-width:1.5}
+.court-floor{fill:var(--surface)}
+.z-l{fill:var(--signal);fill-opacity:.2}.z-c{fill:var(--cblue);fill-opacity:.2}.z-t{fill:var(--ok);fill-opacity:.2}.z-s{fill:var(--muted);fill-opacity:.16}
+.r-l{fill:var(--signal)}.r-c{fill:var(--cblue)}.r-t{fill:var(--ok)}
+.r-txt{fill:#fff;font:700 13px var(--f-display);text-anchor:middle;dominant-baseline:central}
+.ghost{opacity:.35}
+.arrowp{fill:none;stroke:var(--ink);stroke-width:2;stroke-dasharray:6 5}
+.arrowh{fill:var(--ink)}
+.c-lbl{fill:var(--ink);font:600 11px var(--f-body)}
+.c-quiet{fill:var(--muted);font:500 10px var(--f-body)}
+.legend{display:flex;gap:12px;flex-wrap:wrap;font-size:.85rem;color:var(--muted)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend i{width:12px;height:12px;border-radius:50%;display:inline-block}
+.pts{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:6px}
+.lightbox{position:fixed;inset:0;z-index:20;background:rgba(5,10,15,.95);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;
+  padding:calc(16px + env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) calc(16px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px))}
+.lightbox .lb-in{background:var(--surface);border-radius:14px;padding:10px;width:100%;max-width:620px;max-height:80vh;overflow:auto}
+.lightbox .lb-in svg,.lightbox .lb-in img{width:100%;height:auto;display:block}
+.lightbox p{color:#fff;margin:0;text-align:center;font-weight:600}
+.lightbox button{border:0;border-radius:10px;padding:10px 18px;font-weight:700;background:#fff;color:#14202a}
 .welcome{min-height:100%;display:flex;flex-direction:column;gap:18px;padding-top:24px}
 .welcome .logo{width:72px;height:72px;border-radius:18px}
 
@@ -321,6 +343,7 @@ function viewHome(){
     <button class="tile" data-go="sit"><span class="ic">${icon.court}</span><strong>Situacije</strong><span>Kratek kviz iz tekem</span></button>
     <button class="tile" data-go="wrong" ${nWrong?"":"disabled"}><span class="ic">${icon.redo}</span><strong>Ponovi napake</strong><span>${nWrong?nWrong+" za ponovitev":"Ni napak"}</span></button>
     <button class="tile" data-go="znaki"><span class="ic">${icon.hand}</span><strong>Znaki</strong><span>${Z.length} sodniških znakov</span></button>
+    <button class="tile" data-go="meh"><span class="ic">${icon.court}</span><strong>Mehanika</strong><span>Postavitve in področja</span></button>
     <button class="tile" data-go="tekma"><span class="ic">${icon.cal}</span><strong>Nova tekma</strong><span>${st.tekme.length?st.tekme.length+" shranjenih tekem":"Zapiši tekmo in komentar"}</span></button>
   </div>
   <div class="eyebrow">Področja · rešeno ${t.seen}/${ALL.length}</div>
@@ -333,6 +356,7 @@ function viewHome(){
     if(g==="sit")startQuiz(izberi(S,QN),"Situacije iz tekem",false,S);
     if(g==="exam")location.hash="izpit";
     if(g==="znaki")location.hash="znaki";
+    if(g==="meh")location.hash="mehanika";
     if(g==="tekma"){tv={mode:"form",id:null};if(location.hash==="#tekme")viewTekme();else location.hash="tekme"}});
   bindCats();bindInstall();
 }
@@ -356,11 +380,12 @@ function viewQuizMenu(){
     <button class="tile" data-n="15"><span class="ic">${icon.play}</span><strong>15 vprašanj</strong><span>Malo daljši kviz</span></button>
     <button class="tile" data-n="sit"><span class="ic">${icon.court}</span><strong>Situacije</strong><span>${QN} primerov iz tekem</span></button>
     <button class="tile new" data-n="new"><span class="ic">${icon.star}</span><strong>Novosti 2026</strong><span>${QN} vprašanj</span></button>
-    <button class="tile wide" data-n="znaki"><span class="ic">${icon.hand}</span><strong>Sodniški znaki</strong><span>Učenje in preizkus znakov</span></button>
+    <button class="tile" data-n="znaki"><span class="ic">${icon.hand}</span><strong>Sodniški znaki</strong><span>Učenje in preizkus</span></button>
+    <button class="tile" data-n="meh"><span class="ic">${icon.court}</span><strong>Mehanika</strong><span>Postavitve in področja</span></button>
   </div>
   <div class="eyebrow">Po področjih</div>${catList()}</div>`;
   app.querySelectorAll("[data-n]").forEach(b=>b.onclick=()=>{const n=b.dataset.n;
-    if(n==="znaki"){location.hash="znaki";return}if(n==="sit")startQuiz(izberi(S,QN),"Situacije iz tekem",false,S);else if(n==="new"){const pool=ALL.filter(x=>x.n);startQuiz(izberi(pool,QN),"Novosti 2026",false,pool)}else startQuiz(izberi(ALL,+n),n+" vprašanj",false,ALL)});
+    if(n==="znaki"){location.hash="znaki";return}if(n==="meh"){location.hash="mehanika";return}if(n==="sit")startQuiz(izberi(S,QN),"Situacije iz tekem",false,S);else if(n==="new"){const pool=ALL.filter(x=>x.n);startQuiz(izberi(pool,QN),"Novosti 2026",false,pool)}else startQuiz(izberi(ALL,+n),n+" vprašanj",false,ALL)});
   bindCats();
 }
 let tick=null;
@@ -634,6 +659,102 @@ function bindBackup(){
       const m=document.getElementById("bmsg");m.hidden=false;m.textContent="Kopija je naložena: "+st.tekme.length+" tekem."}catch(err){msg("Datoteka ni kopija aplikacije refs KZS.")}};r.readAsText(f)};
 }
 
+/* ---------- mehanika sojenja ---------- */
+/* igrišče: x 0–15 m (levo→desno), d = razdalja od čelne črte (0) do sredinske črte (14) */
+const CX=x=>20+x*20, CY=d=>300-d*20;
+let svgUid=0;
+function courtSVG(o){
+  const u="m"+(++svgUid), P=pts=>pts.map(([x,d])=>CX(x)+","+CY(d)).join(" ");
+  const arc3=`M${CX(.9)} ${CY(0)}L${CX(.9)} ${CY(2.99)}A135 135 0 0 1 ${CX(14.1)} ${CY(2.99)}L${CX(14.1)} ${CY(0)}`;
+  const zones=(o.zones||[]).map(z=>`<polygon class="${z.c}" points="${P(z.p)}"/>`).join("");
+  const zl=(o.zones||[]).filter(z=>z.t).map(z=>`<text class="c-lbl" x="${CX(z.t[0])}" y="${CY(z.t[1])}" text-anchor="middle">${z.t[2]}</text>`).join("");
+  const arrows=(o.arrows||[]).map(a=>{const pts=a.map(([x,d])=>[CX(x),CY(d)]);const n=pts.length,[x1,y1]=pts[n-2],[x2,y2]=pts[n-1];
+    const ang=Math.atan2(y2-y1,x2-x1),h=9,bx=x2-Math.cos(ang)*4,by=y2-Math.sin(ang)*4;
+    const tri=[[bx,by],[bx-h*Math.cos(ang-0.45),by-h*Math.sin(ang-0.45)],[bx-h*Math.cos(ang+0.45),by-h*Math.sin(ang+0.45)]].map(p=>p.join(",")).join(" ");
+    return `<polyline class="arrowp" points="${pts.slice(0,-1).map(p=>p.join(",")).join(" ")} ${bx},${by}"/><polygon class="arrowh" points="${tri}"/>`}).join("");
+  const refs=(o.refs||[]).map(r=>`<g class="${r.g?"ghost":""}"><circle class="r-${r.k}" cx="${CX(r.x)}" cy="${CY(r.d)}" r="13"/><text class="r-txt" x="${CX(r.x)}" y="${CY(r.d)}">${r.k==="l"?"L":r.k==="c"?"C":"T"}</text></g>`).join("");
+  const ball=o.ball?`<circle cx="${CX(o.ball[0])}" cy="${CY(o.ball[1])}" r="7" fill="#e36414" stroke="#7a3208" stroke-width="1.5"/>`:"";
+  const notes=(o.notes||[]).map(n=>`<text class="c-quiet" x="${CX(n[0])}" y="${CY(n[1])}" text-anchor="${n[3]||"middle"}">${n[2]}</text>`).join("");
+  return `<svg viewBox="0 0 340 368" role="img" aria-label="${esc(o.title)}">
+  <rect class="court-floor" x="${CX(0)}" y="${CY(14)}" width="300" height="280"/>
+  ${zones}
+  <rect class="court-line" x="${CX(0)}" y="${CY(14)}" width="300" height="280"/>
+  <rect class="court-line" x="${CX(5.05)}" y="${CY(5.8)}" width="${4.9*20}" height="${5.8*20}"/>
+  <circle class="court-line" cx="${CX(7.5)}" cy="${CY(5.8)}" r="36"/>
+  <path class="court-line" d="${arc3}"/>
+  <path class="court-line" d="M${CX(6.25)} ${CY(1.575)}A25 25 0 0 1 ${CX(8.75)} ${CY(1.575)}"/>
+  <path class="court-line" d="M${CX(5.7)} ${CY(14)}A36 36 0 0 0 ${CX(9.3)} ${CY(14)}"/>
+  <line class="court-line" x1="${CX(6.6)}" y1="${CY(1.2)}" x2="${CX(8.4)}" y2="${CY(1.2)}" style="stroke-width:3"/>
+  <circle class="court-line" cx="${CX(7.5)}" cy="${CY(1.575)}" r="4.5"/>
+  ${zl}${arrows}${ball}${refs}${notes}
+  <text class="c-quiet" x="${CX(7.5)}" y="${CY(14)-6}" text-anchor="middle">sredinska črta</text>
+  <text class="c-quiet" x="${CX(15)}" y="${CY(0)+62}" text-anchor="end">čelna črta ↑</text>
+</svg>`;
+}
+const ZT=[[0,5.8],[9.95,5.8],[9.95,9],[15,9],[15,14],[0,14]];
+const DIAG={
+ osnovni3:{title:"3 sodniki: osnovni položaji in področja",
+   zones:[{c:"z-l",p:[[0,0],[9.95,0],[9.95,5.8],[0,5.8]],t:[3,3.2,"Lead"]},{c:"z-c",p:[[9.95,0],[15,0],[15,9],[9.95,9]],t:[12.5,3.2,"Centre"]},{c:"z-t",p:ZT,t:[5,11.2,"Trail"]}],
+   refs:[{k:"l",x:3.6,d:-1.1},{k:"c",x:14.3,d:5.8},{k:"t",x:.7,d:8.6}],ball:[2.6,7.2],
+   notes:[[3.6,-2.55,"zunaj igrišča"]]},
+ rotacija3:{title:"3 sodniki: rotacija, ko žoga preide na šibko stran",
+   zones:[],refs:[{k:"l",x:3.6,d:-1.1,g:1},{k:"c",x:14.3,d:5.8,g:1},{k:"t",x:.7,d:8.6,g:1},{k:"l",x:11.4,d:-1.1},{k:"t",x:14.3,d:8.6},{k:"c",x:.7,d:5.8}],
+   arrows:[[[4.6,-1.1],[10.2,-1.1]],[[14.3,6.9],[14.3,7.6]],[[.7,7.6],[.7,6.9]]],ball:[12.6,7.2],
+   notes:[[7.5,-2.55,"Lead prek položaja »close down«"]]},
+ osnovni2:{title:"2 sodnika: osnovna položaja in področja",
+   zones:[{c:"z-l",p:[[0,0],[5.05,0],[5.05,5.8],[0,5.8]],t:[2.5,3.2,"Lead"]},{c:"z-s",p:[[5.05,0],[9.95,0],[9.95,5.8],[5.05,5.8]],t:[7.5,4.4,"skupno"]},{c:"z-t",p:[[9.95,0],[15,0],[15,14],[0,14],[0,5.8],[9.95,5.8]],t:[9.5,10.5,"Trail"]}],
+   refs:[{k:"l",x:3.8,d:-1.1},{k:"t",x:14.3,d:8.4}],ball:[11.8,8.2]},
+ prosti2:{title:"2 sodnika: prosti met z borbo za odbito žogo",
+   zones:[],refs:[{k:"l",x:5.05,d:-1.1},{k:"t",x:14.3,d:5.8}],ball:[7.5,6.4],
+   notes:[[5.05,-2.55,"stik polja omejitve in čelne črte","start"]]}
+};
+function diag(k){const o=DIAG[k];return `<button class="courtwrap" data-zoom="${k}" aria-label="Povečaj: ${esc(o.title)}">${courtSVG(o)}</button>`}
+function legend(two){return `<div class="legend"><span><i style="background:var(--signal)"></i>L – Lead (vodilni)</span>${two?"":`<span><i style="background:var(--cblue)"></i>C – Centre (srednji)</span>`}<span><i style="background:var(--ok)"></i>T – Trail (zadnji)</span><span><i style="background:#e36414;border:1.5px solid #7a3208"></i>žoga</span></div>`}
+let mehMode="3";
+function viewMehanika(){
+  const three=mehMode==="3";
+  const cards=three?`
+  <article class="card"><h3>Osnovni položaji in področja</h3>${diag("osnovni3")}${legend(false)}
+    <ul class="pts"><li><b>Lead</b> je zunaj igrišča za čelno črto na strani žoge, obrnjen približno 45° proti obroču. Pokriva nizko igro in polje omejitve na močni strani.</li>
+    <li><b>Centre</b> stoji na podaljšku črte za proste mete na šibki strani, znotraj igrišča. Šibka stran je vedno njegovo primarno področje, vključno s prodori skozi polje omejitve.</li>
+    <li><b>Trail</b> sledi igri 2–3 korake za žogo na močni strani in pokriva mete za 2 in 3 točke z zunanjih položajev.</li>
+    <li>Na strani žoge naj bosta čim pogosteje dva sodnika.</li></ul></article>
+  <article class="card"><h3>Rotacija</h3>${diag("rotacija3")}
+    <ol class="pts"><li><b>Lead</b> odloča o rotaciji glede na položaj žoge: rotira zgodaj in pogosto, a ne prehitro.</li>
+    <li>Lead se najprej premakne v položaj <b>»close down«</b> (žoga na sredini), nato na novo stran žoge.</li>
+    <li><b>Centre</b> ostane na mestu in sodi, dokler Lead ne pride na novo stran in ni pripravljen.</li>
+    <li><b>Trail</b> rotira skupaj z Leadom in zasede novi položaj Centre; dotedanji Centre postane Trail.</li>
+    <li>Ob hitrem metu ali prodoru na šibki strani ni rotacije.</li></ol></article>
+  <article class="card"><h3>Menjava po napaki</h3><ul class="pts"><li>Sodnik, ki dosodi napako, po prijavi zapisnikarski mizi <b>vedno odide na nasprotno stran</b>.</li><li>Brez dolgih menjav.</li></ul></article>
+  <article class="card"><h3>Vračanje žoge s čelne črte (prednje polje)</h3><ul class="pts"><li>Na strani žoge sta vedno dva sodnika.</li><li><b>Lead</b> je aktivni sodnik: običajno zunaj čelne črte, v kotu znotraj igrišča.</li><li><b>Trail</b> ponovi Leadov znak za vklop ure.</li></ul></article>
+  <article class="card"><h3>Tranzicija</h3><ul class="pts"><li><b>Lead</b> se hitro obrne in teče v ravni črti na izhodiščni položaj, obrnjen proti igrišču.</li><li><b>Trail</b> ostane za čelno črto do podaje pri vračanju, nato sledi igri.</li><li><b>Centre</b> je obrnjen proti igrišču, pripravljen na igro na šibki strani, in nadzira 8 sekund.</li><li>V tranziciji ni rotacije: počakaj, da je vsa ekipa sodnikov v prednjem polju.</li></ul></article>`
+  :`
+  <article class="card"><h3>Osnovna položaja in področja</h3>${diag("osnovni2")}${legend(true)}
+    <ul class="pts"><li>Sodnika »zapreta« igralce med seboj: Lead na eni strani koša za čelno črto, Trail na drugi strani igrišča.</li>
+    <li><b>Lead</b> pokriva nizko igro na svoji strani. <b>Trail</b> pokriva zunanji del, šibko stran in vrh.</li>
+    <li>Polje omejitve je <b>skupno</b>: nizko in globoko presoja Lead, visoko in blizu Trail, korakanje pretežno Trail.</li>
+    <li>Igra na žogo nad obročem in igra na koš je samo naloga sodnika Trail.</li>
+    <li>Ves čas je en sodnik na žogi in en zunaj nje.</li></ul></article>
+  <article class="card"><h3>Prosti met z borbo za odbito žogo</h3>${diag("prosti2")}
+    <ul class="pts"><li><b>Lead</b> stoji na stiku polja omejitve in čelne črte, zunaj igrišča in izven pogleda metalca.</li><li>Ob tehnični napaki (brez igralcev na mestih) aktivni sodnik zasede položaj Trail.</li></ul></article>
+  <article class="card"><h3>Zadnje polje in tranzicija</h3><ul class="pts"><li>Brez pritiska Trail drži ravno črto po igrišču.</li><li>Pri pritisku novi Lead spremlja igro pri sredinski črti in pomaga pri štetju 8 sekund.</li><li>Po izgubi žoge mora dotedanji Trail presoditi vsak kontakt takoj po izgubi žoge.</li></ul></article>`;
+  app.innerHTML=`<div class="screen" style="display:flex;flex-direction:column;gap:16px">
+  <div><div class="eyebrow">Postavitve in področja</div><h1>Mehanika sojenja</h1></div>
+  <div class="seg" role="group" aria-label="Število sodnikov"><button id="mm3" aria-pressed="${three}">3 sodniki</button><button id="mm2" aria-pressed="${!three}">2 sodnika</button></div>
+  ${cards}
+  <button class="btn signal" id="mq">Kviz iz mehanike</button>
+  <p class="note">Skice so poenostavljene, meje področij so približne. Povzeto po FIBA priročnikih za sodnike (3PO in 2PO); podrobnosti preveri v priročniku. Tapni skico za povečavo.</p></div>`;
+  document.getElementById("mm3").onclick=()=>{mehMode="3";viewMehanika()};
+  document.getElementById("mm2").onclick=()=>{mehMode="2";viewMehanika()};
+  document.getElementById("mq").onclick=()=>{const pool=ALL.filter(x=>x.c==="mehanika");startQuiz(izberi(pool,QN),KAT.mehanika,false,pool)};
+  bindZoom();
+}
+function openLightbox(html,cap){const lb=document.createElement("div");lb.className="lightbox";lb.setAttribute("role","dialog");lb.setAttribute("aria-modal","true");
+  lb.innerHTML=`<div class="lb-in">${html}</div><p>${esc(cap)}</p><button id="lbx">Zapri</button>`;document.body.appendChild(lb);
+  const close=()=>{lb.remove();document.removeEventListener("keydown",k)},k=e=>{if(e.key==="Escape")close()};
+  lb.onclick=e=>{if(e.target===lb||e.target.id==="lbx")close()};document.addEventListener("keydown",k);document.getElementById("lbx").focus()}
+function bindZoom(){app.querySelectorAll("[data-zoom]").forEach(b=>b.onclick=()=>{const o=DIAG[b.dataset.zoom];openLightbox(courtSVG(o),o.title)})}
+
 /* ---------- usmerjanje ---------- */
 let cur="domov";
 function route(){
@@ -642,13 +763,15 @@ function route(){
   nav.hidden=false;document.body.classList.remove("bare");
   const v=(location.hash||"#domov").slice(1),prev=cur;cur=v;
   const fab=document.getElementById("fab");if(fab&&v!=="tekme")fab.remove();
-  const tab=v==="znaki"?"kviz":v;
+  document.querySelectorAll(".lightbox").forEach(l=>l.remove());
+  const tab=(v==="znaki"||v==="mehanika")?"kviz":v;
   nav.querySelectorAll("a").forEach(a=>{if(a.dataset.v===tab)a.setAttribute("aria-current","page");else a.removeAttribute("aria-current")});
   if(quiz&&!quiz.keep&&!(v==="kviz"&&!quiz.exam)&&!(v==="izpit"&&quiz.exam)){clearInterval(tick);quiz=null}
   if(quiz)quiz.keep=false;
   if(v==="kviz"){quiz&&!quiz.exam?renderQ():viewQuizMenu()}
   else if(v==="izpit"){quiz&&quiz.exam?renderQ():viewExamIntro()}
   else if(v==="znaki")viewZnaki();
+  else if(v==="mehanika")viewMehanika();
   else if(v==="profil")viewProfil();
   else if(v==="tekme"){if(prev!=="tekme"&&tv.mode!=="form")tv={mode:"list"};viewTekme()}
   else{cur="domov";viewHome()}

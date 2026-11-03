@@ -1,4 +1,4 @@
-const CACHE = "refs-kzs-v7";
+const CACHE = "refs-kzs-v8";
 const FILES = ["./", "./index.html", "./data.js", "./manifest.json", "./icon-192.png", "./icon-512.png", "./apple-touch-icon.png", "./favicon-32.png"];
 
 self.addEventListener("install", e => {
