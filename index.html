@@ -1,0 +1,665 @@
+<!doctype html>
+<html lang="sl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>refs KZS</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="theme-color" content="#14324a">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="refs KZS">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="favicon-32.png" type="image/png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Source+Sans+3:wght@400;600;700&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+/* Postavitev: telefonska aplikacija – velik naslov zaslona, vsebina v enem stolpcu, fiksna spodnja vrstica z zavihki. */
+:root{
+  --bg:#edf0f3; --surface:#ffffff; --surface-2:#f6f8fa; --ink:#14202a; --muted:#5a6976; --line:#d5dce2;
+  --brand:#14324a; --brand-ink:#ffffff; --signal:#e36414; --signal-ink:#ffffff;
+  --ok:#1d7a4c; --bad:#b3261e; --new:#6d45c9; --ok-bg:#e2f2e9; --bad-bg:#fbe6e4; --new-bg:#eee7fb; --track:#dde4ea;
+  --shadow:0 1px 2px rgba(20,32,42,.06),0 4px 14px rgba(20,32,42,.06);
+  --f-display:"Barlow Condensed","Arial Narrow",sans-serif;
+  --f-body:"Source Sans 3","Segoe UI",system-ui,sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0d141a; --surface:#16212a; --surface-2:#1c2833; --ink:#e6ecf1; --muted:#98a8b4; --line:#273541;
+  --brand:#1b4566; --brand-ink:#f2f7fb; --signal:#ff8a3d; --signal-ink:#1a0c02;
+  --ok:#5cc58f; --bad:#ff7b72; --new:#b79bff; --ok-bg:#15301f; --bad-bg:#371a19; --new-bg:#271f3d; --track:#24313c;
+  --shadow:0 1px 2px rgba(0,0,0,.3); color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0d141a; --surface:#16212a; --surface-2:#1c2833; --ink:#e6ecf1; --muted:#98a8b4; --line:#273541;
+  --brand:#1b4566; --brand-ink:#f2f7fb; --signal:#ff8a3d; --signal-ink:#1a0c02;
+  --ok:#5cc58f; --bad:#ff7b72; --new:#b79bff; --ok-bg:#15301f; --bad-bg:#371a19; --new-bg:#271f3d; --track:#24313c;
+  --shadow:0 1px 2px rgba(0,0,0,.3); color-scheme:dark}
+
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.5;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
+  padding-block:0 calc(88px + env(safe-area-inset-bottom,0px))}
+body.bare{padding-bottom:24px}
+.wrap{max-width:620px;margin:0 auto;display:flex;flex-direction:column;gap:16px;padding-block:20px 8px}
+h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;letter-spacing:.01em}
+h1{font-size:2.2rem;line-height:1.02;font-weight:800;text-transform:uppercase}
+h2{font-size:1.45rem;font-weight:700;text-transform:uppercase}
+h3{font-size:1.1rem;font-weight:700}
+p{margin:0}
+.eyebrow{font-family:var(--f-display);font-weight:700;text-transform:uppercase;letter-spacing:.12em;font-size:.78rem;color:var(--muted)}
+.muted{color:var(--muted)}
+.mono{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+button,input,select{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:3px solid var(--signal);outline-offset:2px}
+.screen{animation:in .22s ease-out}
+@keyframes in{from{transform:translateY(6px);opacity:.6}to{transform:none;opacity:1}}
+
+/* glava zaslona */
+.top{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.avatar{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;font-family:var(--f-display);font-weight:800;font-size:1.15rem;color:#fff;flex:none;border:0}
+.avatar.big{width:84px;height:84px;font-size:2.1rem}
+
+/* glavni panel */
+.hero{background:var(--brand);color:var(--brand-ink);border-radius:18px;padding:18px;display:grid;grid-template-columns:auto 1fr;gap:16px;align-items:center;box-shadow:var(--shadow)}
+.hero .eyebrow{color:inherit;opacity:.72}
+.hero h2{font-size:1.6rem}
+.hero p{opacity:.85;font-size:.95rem}
+.ring{width:96px;height:96px;position:relative}
+.ring svg{width:100%;height:100%;transform:rotate(-90deg)}
+.ring .v{position:absolute;inset:0;display:grid;place-items:center;text-align:center;line-height:1}
+.ring .v b{font-family:var(--f-mono);font-size:1.5rem;display:block}
+.ring .v small{font-size:.7rem;opacity:.8;font-family:var(--f-display);letter-spacing:.08em;text-transform:uppercase}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.chip{background:rgba(255,255,255,.14);border-radius:999px;padding:3px 10px;font-size:.82rem;font-weight:600}
+
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.stat{background:var(--surface);border-radius:12px;padding:12px;box-shadow:var(--shadow)}
+.stat b{display:block;font-family:var(--f-mono);font-size:1.35rem;font-variant-numeric:tabular-nums;line-height:1.2}
+.stat span{font-size:.8rem;color:var(--muted)}
+
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.tile{border:0;border-radius:14px;padding:14px;text-align:left;background:var(--surface);box-shadow:var(--shadow);display:flex;flex-direction:column;gap:4px;min-width:0}
+.tile strong{font-family:var(--f-display);font-size:1.18rem;text-transform:uppercase;letter-spacing:.02em;line-height:1.1}
+.tile span{font-size:.86rem;color:var(--muted)}
+.tile .ic{width:30px;height:30px;border-radius:8px;display:grid;place-items:center;background:var(--surface-2);margin-bottom:4px}
+.tile .ic svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.tile.primary{background:var(--signal);color:var(--signal-ink)}
+.tile.primary span{color:inherit;opacity:.85}
+.tile.primary .ic{background:rgba(255,255,255,.2)}
+.tile.new strong{color:var(--new)} .tile.new .ic{background:var(--new-bg);color:var(--new)}
+.tile.wide{grid-column:1/-1}
+.tile:disabled{opacity:.45;cursor:default}
+
+.list{display:flex;flex-direction:column;background:var(--surface);border-radius:14px;overflow:hidden;box-shadow:var(--shadow)}
+.row{display:grid;grid-template-columns:1fr auto;gap:4px 12px;align-items:center;padding:13px 14px;border:0;border-top:1px solid var(--line);background:none;text-align:left;width:100%;min-width:0}
+.row:first-child{border-top:0}
+.row .pct{font-family:var(--f-mono);font-variant-numeric:tabular-nums;font-size:.9rem;color:var(--muted)}
+.row .chev{color:var(--muted)}
+.bar{grid-column:1/-1;height:6px;background:var(--track);border-radius:3px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--ok);border-radius:3px}
+.bar i.mid{background:var(--signal)} .bar i.low{background:var(--bad)}
+.tag{display:inline-block;font-family:var(--f-display);font-weight:700;font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;padding:2px 7px;border-radius:4px;background:var(--track);color:var(--muted)}
+.tag.n{background:var(--new-bg);color:var(--new)}
+
+.banner{display:flex;gap:12px;align-items:center;background:var(--surface);border-radius:14px;padding:12px 14px;box-shadow:var(--shadow)}
+.banner img{width:42px;height:42px;border-radius:10px;flex:none}
+.banner div{flex:1;min-width:0}
+.banner b{display:block}
+.banner span{font-size:.86rem;color:var(--muted)}
+
+/* kviz */
+.qhead{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.progress{height:6px;background:var(--track);border-radius:3px;overflow:hidden}
+.progress i{display:block;height:100%;background:var(--signal);transition:width .25s}
+.card{background:var(--surface);border-radius:16px;padding:18px;display:flex;flex-direction:column;gap:14px;box-shadow:var(--shadow)}
+.qtext{font-size:1.15rem;font-weight:600;line-height:1.4}
+.sit-title{font-family:var(--f-display);font-weight:700;text-transform:uppercase;font-size:1.05rem;color:var(--signal);letter-spacing:.04em}
+.opts{display:flex;flex-direction:column;gap:8px}
+.opt{border:1.5px solid var(--line);background:var(--surface-2);border-radius:12px;padding:12px 14px;text-align:left;display:flex;gap:10px;align-items:flex-start;transition:border-color .15s,background .15s}
+.opt .k{font-family:var(--f-mono);font-weight:700;color:var(--muted);flex:none}
+.opt.sel{border-color:var(--brand);background:var(--surface)}
+.opt.ok{border-color:var(--ok);background:var(--ok-bg)}
+.opt.bad{border-color:var(--bad);background:var(--bad-bg)}
+.opt:disabled{cursor:default}
+.explain{border-left:4px solid var(--ok);padding:4px 0 4px 12px;display:flex;flex-direction:column;gap:6px}
+.explain.wrong{border-color:var(--bad)}
+.explain b{font-family:var(--f-display);text-transform:uppercase;letter-spacing:.04em;font-size:1.05rem}
+.ref{font-family:var(--f-mono);font-size:.8rem;color:var(--muted)}
+.btn{border:0;background:var(--brand);color:var(--brand-ink);border-radius:12px;padding:14px 16px;font-family:var(--f-display);font-weight:700;font-size:1.1rem;text-transform:uppercase;letter-spacing:.04em;width:100%}
+.btn.signal{background:var(--signal);color:var(--signal-ink)}
+.btn:disabled{opacity:.45;cursor:default}
+.ghost{border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:9px 14px;font-weight:600}
+.result{text-align:center;align-items:center}
+.score{font-family:var(--f-mono);font-size:3.4rem;font-weight:700;font-variant-numeric:tabular-nums;line-height:1}
+.pass{color:var(--ok)} .fail{color:var(--bad)}
+.timer{font-family:var(--f-mono);font-weight:700;font-size:1.25rem;color:var(--signal);background:var(--surface);padding:6px 10px;border-radius:8px;font-variant-numeric:tabular-nums;box-shadow:var(--shadow)}
+.timer.low{color:#fff;background:var(--bad)}
+
+/* znaki */
+.seg{display:flex;background:var(--track);border-radius:11px;padding:4px;gap:4px}
+.seg button{flex:1;border:0;background:none;padding:9px;border-radius:8px;font-weight:600}
+.seg button[aria-pressed="true"]{background:var(--surface);box-shadow:var(--shadow)}
+.sig{display:flex;flex-direction:column;gap:2px;padding:12px 14px;border-top:1px solid var(--line)}
+.sig .nm{font-weight:700;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.sig .ds{color:var(--muted);font-size:.95rem}
+.group-h{padding:10px 14px 6px;font-family:var(--f-display);font-weight:700;text-transform:uppercase;letter-spacing:.1em;font-size:.8rem;color:var(--muted);background:var(--surface-2)}
+
+/* obrazci */
+.field{display:flex;flex-direction:column;gap:6px}
+.field label{font-weight:600;font-size:.92rem}
+.field input,.field select{border:1.5px solid var(--line);background:var(--surface);border-radius:10px;padding:12px;width:100%}
+.swatches{display:flex;gap:10px;flex-wrap:wrap}
+.sw{width:36px;height:36px;border-radius:50%;border:3px solid transparent}
+.sw[aria-pressed="true"]{border-color:var(--ink)}
+.note{font-size:.88rem;color:var(--muted);background:var(--surface);border:1px dashed var(--line);border-radius:12px;padding:12px 14px}
+.confirm{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.danger{border:0;background:var(--bad);color:#fff;border-radius:10px;padding:10px 14px;font-weight:700}
+.steps{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:6px}
+
+.game{display:grid;grid-template-columns:auto 1fr auto;gap:4px 12px;align-items:center;padding:13px 14px;border:0;border-top:1px solid var(--line);background:none;text-align:left;width:100%;min-width:0}
+.game:first-child{border-top:0}
+.game .date{font-family:var(--f-mono);font-size:.78rem;color:var(--muted);text-align:center;line-height:1.15;min-width:38px}
+.game .date b{display:block;font-size:1.15rem;color:var(--ink)}
+.game .teams{min-width:0}
+.game .teams strong{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.game .teams span{font-size:.85rem;color:var(--muted);display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.game .res{font-family:var(--f-mono);font-weight:700;font-variant-numeric:tabular-nums}
+.game .cm{grid-column:2/-1;font-size:.88rem;color:var(--muted);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.scoreline{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:10px;align-items:center;text-align:center}
+.scoreline .tm{font-family:var(--f-display);font-weight:700;font-size:1.1rem;text-transform:uppercase;line-height:1.1;overflow-wrap:break-word;hyphens:auto;min-width:0}
+.scoreline .sc{font-family:var(--f-mono);font-weight:700;font-size:1.7rem;font-variant-numeric:tabular-nums;color:var(--signal);white-space:nowrap}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:6px 14px;font-size:.95rem}
+.kv dt{color:var(--muted)} .kv dd{margin:0;min-width:0;overflow-wrap:anywhere}
+.comment{white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.55}
+.stars{display:flex;gap:6px}
+.stars button{width:40px;height:40px;border-radius:10px;border:1.5px solid var(--line);background:var(--surface-2);font-family:var(--f-mono);font-weight:700}
+.stars button[aria-pressed="true"]{background:var(--signal);color:var(--signal-ink);border-color:transparent}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.field textarea{border:1.5px solid var(--line);background:var(--surface);border-radius:10px;padding:12px;width:100%;min-height:140px;resize:vertical;line-height:1.5}
+.fab{position:fixed;right:max(16px,calc(env(safe-area-inset-right,0px) + 16px));bottom:calc(80px + env(safe-area-inset-bottom,0px));z-index:6;border:0;border-radius:16px;background:var(--signal);color:var(--signal-ink);padding:14px 18px;font-family:var(--f-display);font-weight:700;font-size:1.05rem;text-transform:uppercase;letter-spacing:.04em;box-shadow:0 6px 18px rgba(0,0,0,.22)}
+.search{border:1.5px solid var(--line);background:var(--surface);border-radius:10px;padding:11px 12px;width:100%}
+.welcome{min-height:100%;display:flex;flex-direction:column;gap:18px;padding-top:24px}
+.welcome .logo{width:72px;height:72px;border-radius:18px}
+
+/* zavihki */
+nav{position:fixed;left:0;right:0;bottom:0;background:var(--surface);border-top:1px solid var(--line);
+  padding:6px max(8px,env(safe-area-inset-right,0px)) calc(6px + env(safe-area-inset-bottom,0px)) max(8px,env(safe-area-inset-left,0px));z-index:5}
+nav .in{max-width:620px;margin:0 auto;display:grid;grid-template-columns:repeat(5,1fr);gap:2px}
+nav a{display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 2px;border-radius:10px;color:var(--muted);text-decoration:none;font-size:.72rem;font-weight:600}
+nav a svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+nav a[aria-current="page"]{color:var(--signal)}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+@media (max-width:370px){.grid2{grid-template-columns:1fr}.stats{grid-template-columns:1fr 1fr}.stats .stat:last-child{grid-column:1/-1}.hero{grid-template-columns:1fr}}
+</style>
+<style>html,body{margin:0}:root{padding-top:env(safe-area-inset-top,0px)}</style>
+</head>
+<body>
+
+
+<main class="wrap" id="app" aria-live="polite"></main>
+
+<nav id="nav" aria-label="Zavihki"><div class="in">
+  <a href="#domov" data-v="domov"><svg viewBox="0 0 24 24"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/></svg>Domov</a>
+  <a href="#kviz" data-v="kviz"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.6V14M12 17.5v.01"/></svg>Trening</a>
+  <a href="#tekme" data-v="tekme"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 10h18M8 14h3M8 17h6"/></svg>Tekme</a>
+  <a href="#izpit" data-v="izpit"><svg viewBox="0 0 24 24"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2M9 2h6"/></svg>Izpit</a>
+  <a href="#profil" data-v="profil"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>Profil</a>
+</div></nav>
+
+<script src="data.js"></script>
+<script>
+(function(){document.documentElement.lang="sl";
+const KEY="kzs-sodniki-v2";
+const app=document.getElementById("app"),nav=document.getElementById("nav");
+const Q=window.VPRASANJA.map((x,i)=>Object.assign({id:"q"+i},x));
+const S=window.SITUACIJE.map((x,i)=>Object.assign({id:"s"+i},x));
+const Z=window.ZNAKI.map((x,i)=>Object.assign({id:"z"+i},x));
+const KAT=window.KAT, ALL=Q.concat(S);
+const RANGI=["Sodnik pripravnik","Sodnik","Regionalni sodnik","Medregionalni sodnik","Zvezni sodnik","Mednarodni sodnik (FIBA)","Inštruktor","Komisar","Drugo"];
+const BARVE=["#14324a","#e36414","#1d7a4c","#6d45c9","#b3261e","#0e7490"];
+const EXAM_N=16, EXAM_MIN=16, PASS=80, QN=12;
+/* izbira kratkega kviza: najprej napačno odgovorjena, nato še nerešena, nato ostala */
+function izberi(pool,n){const g=x=>{const it=st.items[x.id];return !it?1:it.last===0?0:2};
+  return shuffle(pool).sort((a,b)=>g(a)-g(b)).slice(0,n)}
+
+/* ---------- shramba ---------- */
+function blank(){return{profile:null,items:{},hist:[],days:{},theme:"system",cilj:10,tekme:[]}}
+function load(){try{const v=JSON.parse(localStorage.getItem(KEY));if(v&&v.items)return Object.assign(blank(),v)}catch(e){}
+  try{const old=JSON.parse(localStorage.getItem("kzs-sodniki-v1"));if(old&&old.items)return Object.assign(blank(),{items:old.items,hist:old.hist||[]})}catch(e){}
+  return blank()}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(st))}catch(e){}}
+let st=load();
+
+/* ---------- pomožne ---------- */
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+const pct=(ok,n)=>n?Math.round(ok/n*100):null;
+const dayKey=(d=new Date())=>d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+const today=()=>st.days[dayKey()]||0;
+function streak(){let n=0,d=new Date();if(!st.days[dayKey(d)])d.setDate(d.getDate()-1);while(st.days[dayKey(d)]){n++;d.setDate(d.getDate()-1)}return n}
+function initials(name){return (name||"?").trim().split(/\s+/).slice(0,2).map(w=>w[0]).join("").toUpperCase()}
+function record(id,ok){const it=st.items[id]||{ok:0,n:0,last:null};it.n++;if(ok)it.ok++;it.last=ok?1:0;st.items[id]=it;st.days[dayKey()]=today()+1;save()}
+function catStats(cat){let ok=0,n=0,seen=0,tot=0;ALL.forEach(x=>{if(x.c!==cat)return;tot++;const it=st.items[x.id];if(it){ok+=it.ok;n+=it.n;seen++}});return{ok,n,seen,tot}}
+function totals(){let ok=0,n=0,seen=0;ALL.forEach(x=>{const it=st.items[x.id];if(it){ok+=it.ok;n+=it.n;seen++}});return{ok,n,seen}}
+const barClass=p=>p===null?"":p>=80?"":p>=50?"mid":"low";
+const wrongIds=()=>ALL.filter(x=>st.items[x.id]&&st.items[x.id].last===0);
+function greet(){const h=new Date().getHours();return h<10?"Dobro jutro":h<18?"Dober dan":"Dober večer"}
+let themeTouched=false;function applyTheme(){const r=document.documentElement;if(st.theme==="system"){if(themeTouched)r.removeAttribute("data-theme")}else{r.setAttribute("data-theme",st.theme);themeTouched=true}}
+const icon={
+  play:'<svg viewBox="0 0 24 24"><path d="M7 4l13 8-13 8z"/></svg>',
+  star:'<svg viewBox="0 0 24 24"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/></svg>',
+  redo:'<svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 3-6.7L3 8M3 3v5h5"/></svg>',
+  court:'<svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M12 4v16"/><circle cx="12" cy="12" r="3"/></svg>',
+  clock:'<svg viewBox="0 0 24 24"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2M9 2h6"/></svg>',
+  hand:'<svg viewBox="0 0 24 24"><path d="M8 13V5.5a1.5 1.5 0 0 1 3 0V12M11 11.5v-7a1.5 1.5 0 0 1 3 0V12M14 6.5a1.5 1.5 0 0 1 3 0V14a6 6 0 0 1-6 6h-1a6 6 0 0 1-5-2.7L3.3 14a1.6 1.6 0 0 1 2.6-1.9L8 14"/></svg>',
+  cal:'<svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 10h18M12 13v5M9.5 15.5h5"/></svg>'
+};
+
+/* ---------- namestitev ---------- */
+let deferred=null;
+window.addEventListener("beforeinstallprompt",e=>{e.preventDefault();deferred=e;if(cur==="domov"||cur==="profil")route()});
+const standalone=()=>matchMedia("(display-mode: standalone)").matches||navigator.standalone===true;
+const isIOS=/iphone|ipad|ipod/i.test(navigator.userAgent);
+function installBlock(full){
+  if(standalone())return full?`<p class="note">Aplikacija je nameščena na tem telefonu.</p>`:"";
+  if(!full&&st.hideInstall)return "";
+  const btn=deferred?`<button class="ghost" id="inst">Namesti</button>`:"";
+  const how=isIOS?`<ol class="steps"><li>Odpri povezavo v <b>Safariju</b>.</li><li>Tapni ikono <b>Deli</b> (kvadrat s puščico).</li><li>Izberi <b>Dodaj na začetni zaslon</b>.</li></ol>`
+    :`<ol class="steps"><li>Odpri povezavo v <b>Chromu</b>.</li><li>Tapni meni <b>⋮</b> zgoraj desno.</li><li>Izberi <b>Namesti aplikacijo</b> ali <b>Dodaj na začetni zaslon</b>.</li></ol>`;
+  if(full)return `<div class="card"><h3>Namesti na telefon</h3>${deferred?`<button class="btn signal" id="inst">Namesti aplikacijo</button>`:how}</div>`;
+  return `<div class="banner"><img src="icon-192.png" alt=""><div><b>Namesti aplikacijo</b><span>${deferred?"Ikona na začetnem zaslonu, deluje brez interneta.":isIOS?"Deli → Dodaj na začetni zaslon":"Meni ⋮ → Namesti aplikacijo"}</span></div>${btn}<button class="ghost" id="hideInst" aria-label="Skrij">✕</button></div>`;
+}
+function bindInstall(){const b=document.getElementById("inst");if(b)b.onclick=async()=>{if(!deferred)return;deferred.prompt();try{await deferred.userChoice}catch(e){}deferred=null;route()};
+  const h=document.getElementById("hideInst");if(h)h.onclick=()=>{st.hideInstall=true;save();route()}}
+
+/* ---------- prvi zagon ---------- */
+let pick={barva:BARVE[0]};
+function viewWelcome(edit){
+  const p=st.profile||{ime:"",rang:RANGI[1],barva:BARVE[0]};pick.barva=p.barva;
+  nav.hidden=!edit;document.body.classList.toggle("bare",!edit);
+  app.innerHTML=`<section class="welcome screen">
+    ${edit?`<div class="top"><h2>Uredi profil</h2><button class="ghost" id="cancel">Prekliči</button></div>`:
+    `<img class="logo" src="icon-192.png" alt=""><div><div class="eyebrow">Košarkarska zveza Slovenije</div><h1>refs KZS</h1></div>
+    <p class="muted">Pravila FIBA 2026, situacije iz tekem in sodniški znaki. Ustvari profil, da aplikacija beleži tvoj napredek.</p>`}
+    <form class="card" id="pf">
+      <div class="field"><label for="ime">Ime in priimek</label><input id="ime" autocomplete="name" required maxlength="40" value="${esc(p.ime)}" placeholder="npr. Jan Novak"></div>
+      <div class="field"><label for="rang">Rang</label><select id="rang">${RANGI.map(r=>`<option${r===p.rang?" selected":""}>${r}</option>`).join("")}</select></div>
+      <div class="field"><label>Barva profila</label><div class="swatches">${BARVE.map(b=>`<button type="button" class="sw" data-b="${b}" aria-label="Barva ${b}" aria-pressed="${b===pick.barva}" style="background:${b}"></button>`).join("")}</div></div>
+      <button class="btn signal" type="submit">${edit?"Shrani":"Začni"}</button>
+    </form>
+    ${edit?"":`<p class="note">Podatki ostanejo samo na tvojem telefonu. Prijava ni potrebna.</p>`}
+  </section>`;
+  app.querySelectorAll(".sw").forEach(b=>b.onclick=()=>{pick.barva=b.dataset.b;app.querySelectorAll(".sw").forEach(x=>x.setAttribute("aria-pressed",x===b))});
+  document.getElementById("pf").onsubmit=e=>{e.preventDefault();const ime=document.getElementById("ime").value.trim();if(!ime)return;
+    st.profile={ime,rang:document.getElementById("rang").value,barva:pick.barva,od:(st.profile&&st.profile.od)||Date.now()};save();
+    nav.hidden=false;document.body.classList.remove("bare");if(edit)location.hash="profil";else{location.hash="domov";route()}};
+  const c=document.getElementById("cancel");if(c)c.onclick=()=>{nav.hidden=false;document.body.classList.remove("bare");route()};
+}
+
+/* ---------- domov ---------- */
+function ring(val,max,color){const r=40,c=2*Math.PI*r,f=Math.min(val/max,1);
+  return `<div class="ring"><svg viewBox="0 0 96 96"><circle cx="48" cy="48" r="${r}" style="stroke:rgba(255,255,255,.18)" stroke-width="9" fill="none"/><circle cx="48" cy="48" r="${r}" style="stroke:${color}" stroke-width="9" fill="none" stroke-linecap="round" stroke-dasharray="${c}" stroke-dashoffset="${c*(1-f)}"/></svg><div class="v"><span><b>${val}</b><small>od ${max}</small></span></div></div>`}
+function viewHome(){
+  const p=st.profile,t=totals(),pp=pct(t.ok,t.n),nNew=ALL.filter(x=>x.n).length,nWrong=wrongIds().length,s=streak(),d=today();
+  const lastExam=st.hist.find(h=>h.exam);
+  app.innerHTML=`<div class="screen" style="display:flex;flex-direction:column;gap:16px">
+  <div class="top"><div><div class="eyebrow">${greet()}</div><h1>${esc(p.ime.split(" ")[0])}</h1></div>
+    <a href="#profil" class="avatar" style="background:${p.barva};text-decoration:none" aria-label="Profil">${esc(initials(p.ime))}</a></div>
+  <section class="hero">
+    ${ring(d,st.cilj,"var(--signal)")}
+    <div><div class="eyebrow">Današnji cilj</div><h2>${d>=st.cilj?"Cilj dosežen":"Še "+(st.cilj-d)+" odgovorov"}</h2>
+      <div class="chips"><span class="chip">${s} ${s===1?"dan":s===2?"dneva":(s===3||s===4)?"dnevi":"dni"} zapored</span><span class="chip">${pp===null?"—":pp+" %"} uspešnost</span></div></div>
+  </section>
+  ${installBlock(false)}
+  <div class="grid2">
+    <button class="tile primary wide" data-go="mix"><span class="ic">${icon.play}</span><strong>Hitri trening</strong><span>Kratek kviz, 10 vprašanj iz vseh področij</span></button>
+    <button class="tile" data-go="exam"><span class="ic">${icon.clock}</span><strong>Izpit</strong><span>${lastExam?"Zadnji: "+lastExam.ok+"/"+lastExam.n:EXAM_N+" vprašanj, "+EXAM_MIN+" min"}</span></button>
+    <button class="tile new" data-go="new"><span class="ic">${icon.star}</span><strong>Novosti 2026</strong><span>Kviz o novih pravilih</span></button>
+    <button class="tile" data-go="sit"><span class="ic">${icon.court}</span><strong>Situacije</strong><span>Kratek kviz iz tekem</span></button>
+    <button class="tile" data-go="wrong" ${nWrong?"":"disabled"}><span class="ic">${icon.redo}</span><strong>Ponovi napake</strong><span>${nWrong?nWrong+" za ponovitev":"Ni napak"}</span></button>
+    <button class="tile" data-go="znaki"><span class="ic">${icon.hand}</span><strong>Znaki</strong><span>${Z.length} sodniških znakov</span></button>
+    <button class="tile" data-go="tekma"><span class="ic">${icon.cal}</span><strong>Nova tekma</strong><span>${st.tekme.length?st.tekme.length+" shranjenih tekem":"Zapiši tekmo in komentar"}</span></button>
+  </div>
+  <div class="eyebrow">Področja · rešeno ${t.seen}/${ALL.length}</div>
+  ${catList()}
+  </div>`;
+  app.querySelectorAll("[data-go]").forEach(b=>b.onclick=()=>{const g=b.dataset.go;
+    if(g==="mix")startQuiz(izberi(ALL,10),"Hitri trening",false,ALL);
+    if(g==="new")startQuiz(izberi(ALL.filter(x=>x.n),QN),"Novosti 2026",false,ALL.filter(x=>x.n));
+    if(g==="wrong")startQuiz(izberi(wrongIds(),QN),"Ponovitev napak");
+    if(g==="sit")startQuiz(izberi(S,QN),"Situacije iz tekem",false,S);
+    if(g==="exam")location.hash="izpit";
+    if(g==="znaki")location.hash="znaki";
+    if(g==="tekma"){tv={mode:"form",id:null};if(location.hash==="#tekme")viewTekme();else location.hash="tekme"}});
+  bindCats();bindInstall();
+}
+function catList(){return `<div class="list">${Object.keys(KAT).map(c=>{const s=catStats(c),p=pct(s.ok,s.n);
+  return `<button class="row" data-cat="${c}"><span><strong>${esc(KAT[c])}</strong> <span class="muted">· ${s.seen}/${s.tot}</span></span><span class="pct">${p===null?"—":p+" %"}</span><span class="bar"><i class="${barClass(p)}" style="width:${s.seen/s.tot*100}%"></i></span></button>`}).join("")}</div>`}
+function bindCats(){app.querySelectorAll("[data-cat]").forEach(b=>b.onclick=()=>{const c=b.dataset.cat,pool=ALL.filter(x=>x.c===c);startQuiz(izberi(pool,QN),KAT[c],false,pool)})}
+
+/* ---------- kviz ---------- */
+let quiz=null;
+function startQuiz(list,title,exam,pool){if(!list.length)return;
+  quiz={list,title,exam:!!exam,pool,i:0,ok:0,answered:false,ans:[],keep:true};
+  if(exam){quiz.end=Date.now()+EXAM_MIN*60000}
+  const target=exam?"izpit":"kviz";
+  if(location.hash!=="#"+target)location.hash=target;else renderQ();
+}
+function viewQuizMenu(){
+  app.innerHTML=`<div class="screen" style="display:flex;flex-direction:column;gap:16px">
+  <div><div class="eyebrow">Kviz iz pravil</div><h1>Trening</h1></div>
+  <div class="grid2">
+    <button class="tile primary" data-n="10"><span class="ic">${icon.play}</span><strong>10 vprašanj</strong><span>Kratek kviz</span></button>
+    <button class="tile" data-n="15"><span class="ic">${icon.play}</span><strong>15 vprašanj</strong><span>Malo daljši kviz</span></button>
+    <button class="tile" data-n="sit"><span class="ic">${icon.court}</span><strong>Situacije</strong><span>${QN} primerov iz tekem</span></button>
+    <button class="tile new" data-n="new"><span class="ic">${icon.star}</span><strong>Novosti 2026</strong><span>${QN} vprašanj</span></button>
+    <button class="tile wide" data-n="znaki"><span class="ic">${icon.hand}</span><strong>Sodniški znaki</strong><span>Učenje in preizkus znakov</span></button>
+  </div>
+  <div class="eyebrow">Po področjih</div>${catList()}</div>`;
+  app.querySelectorAll("[data-n]").forEach(b=>b.onclick=()=>{const n=b.dataset.n;
+    if(n==="znaki"){location.hash="znaki";return}if(n==="sit")startQuiz(izberi(S,QN),"Situacije iz tekem",false,S);else if(n==="new"){const pool=ALL.filter(x=>x.n);startQuiz(izberi(pool,QN),"Novosti 2026",false,pool)}else startQuiz(izberi(ALL,+n),n+" vprašanj",false,ALL)});
+  bindCats();
+}
+let tick=null;
+function fmt(ms){ms=Math.max(0,ms);const s=Math.ceil(ms/1000);return String(Math.floor(s/60)).padStart(2,"0")+":"+String(s%60).padStart(2,"0")}
+function renderQ(){
+  const q=quiz.list[quiz.i];quiz.answered=false;quiz.sel=null;
+  quiz.order=shuffle(q.o.map((t,k)=>({t,k})));
+  app.innerHTML=`<div class="screen" style="display:flex;flex-direction:column;gap:14px">
+  <div class="qhead"><div><div class="eyebrow">${esc(quiz.title)}</div><h2 class="mono">${quiz.i+1} / ${quiz.list.length}</h2></div>
+    <div style="display:flex;gap:8px;align-items:center">${quiz.exam?`<span class="timer" id="tm">${fmt(quiz.end-Date.now())}</span>`:""}<button class="ghost" id="quit">${quiz.exam?"Oddaj":"Končaj"}</button></div></div>
+  <div class="progress"><i style="width:${quiz.i/quiz.list.length*100}%"></i></div>
+  <article class="card">
+    <div style="display:flex;gap:6px;flex-wrap:wrap"><span class="tag">${esc(KAT[q.c])}</span>${q.n?'<span class="tag n">Novo 2026</span>':""}</div>
+    ${q.t?`<div class="sit-title">${esc(q.t)}</div>`:""}
+    <p class="qtext">${esc(q.q)}</p>
+    <div class="opts">${quiz.order.map((o,j)=>`<button class="opt" data-j="${j}"><span class="k">${"ABCD"[j]}</span><span>${esc(o.t)}</span></button>`).join("")}</div>
+    <div id="fb">${quiz.exam?`<button class="btn" id="nx" disabled>${quiz.i===quiz.list.length-1?"Oddaj izpit":"Naprej"}</button>`:""}</div>
+  </article></div>`;
+  document.getElementById("quit").onclick=()=>finishQuiz();
+  app.querySelectorAll(".opt").forEach(b=>b.onclick=()=>quiz.exam?selectExam(+b.dataset.j):answer(+b.dataset.j));
+  if(quiz.exam){document.getElementById("nx").onclick=nextExam;startTick()}
+}
+function startTick(){clearInterval(tick);tick=setInterval(()=>{if(!quiz||!quiz.exam){clearInterval(tick);return}
+  const left=quiz.end-Date.now(),el=document.getElementById("tm");if(el){el.textContent=fmt(left);el.classList.toggle("low",left<60000)}
+  if(left<=0){clearInterval(tick);finishQuiz(true)}},500)}
+function selectExam(j){quiz.sel=j;app.querySelectorAll(".opt").forEach((b,k)=>b.classList.toggle("sel",k===j));document.getElementById("nx").disabled=false}
+function nextExam(){if(quiz.sel===null)return;const q=quiz.list[quiz.i],ok=quiz.order[quiz.sel].k===q.a;
+  quiz.ans.push({q,ok,chose:quiz.order[quiz.sel].t});if(ok)quiz.ok++;record(q.id,ok);
+  if(quiz.i===quiz.list.length-1)finishQuiz();else{quiz.i++;renderQ();scrollTo(0,0)}}
+function answer(j){
+  if(quiz.answered)return;quiz.answered=true;
+  const q=quiz.list[quiz.i],ok=quiz.order[j].k===q.a;if(ok)quiz.ok++;record(q.id,ok);quiz.ans.push({q,ok});
+  app.querySelectorAll(".opt").forEach((b,k)=>{b.disabled=true;if(quiz.order[k].k===q.a)b.classList.add("ok");else if(k===j)b.classList.add("bad")});
+  const last=quiz.i===quiz.list.length-1;
+  document.getElementById("fb").innerHTML=`<div class="explain ${ok?"":"wrong"}"><b style="color:var(${ok?"--ok":"--bad"})">${ok?"Pravilno":"Napačno"}</b><p>${esc(q.e)}</p><span class="ref">${esc(q.r)}</span></div>
+  <button class="btn" id="nx" style="margin-top:4px">${last?"Rezultat":"Naslednje vprašanje"}</button>`;
+  const nx=document.getElementById("nx");nx.focus({preventScroll:true});nx.scrollIntoView({block:"nearest",behavior:"smooth"});
+  nx.onclick=()=>{if(last)finishQuiz();else{quiz.i++;renderQ();scrollTo(0,0)}};
+}
+function finishQuiz(timeout){
+  clearInterval(tick);
+  const done=quiz.ans.length,total=quiz.exam?quiz.list.length:done;
+  if(done){st.hist.unshift({d:Date.now(),t:quiz.title,ok:quiz.ok,n:total,exam:quiz.exam});st.hist=st.hist.slice(0,40);save()}
+  const p=pct(quiz.ok,total),passed=quiz.exam&&p>=PASS;
+  const wrong=quiz.ans.filter(a=>!a.ok);
+  app.innerHTML=`<div class="screen" style="display:flex;flex-direction:column;gap:14px">
+  <article class="card result">
+    <div class="eyebrow">${esc(quiz.title)}${timeout?" · čas je potekel":""}</div>
+    <div class="score ${quiz.exam?(passed?"pass":"fail"):""}">${quiz.ok}/${total}</div>
+    <h2>${quiz.exam?(passed?"Opravljeno":"Ni opravljeno"):p===null?"Brez odgovorov":p>=90?"Odlično":p>=70?"Dobro":"Še vaje"}</h2>
+    <p class="muted">${quiz.exam?`Meja za uspeh je ${PASS} %. Tvoj rezultat: ${p} %.`:p===null?"":p>=70?"Preglej napačne odgovore in navedene člene.":"Ponovi to področje in preberi navedene člene."}</p>
+    <div class="grid2" style="width:100%">
+      <button class="tile primary" id="again"><strong>${quiz.exam?"Nov izpit":"Nov kviz"}</strong><span>Nova vprašanja</span></button>
+      <button class="tile" id="home"><strong>Domov</strong><span>Nazaj na pregled</span></button>
+    </div></article>
+  ${wrong.length?`<div class="eyebrow">Napačni odgovori</div><div class="list">${wrong.map(a=>`<div class="sig"><span class="nm">${esc(a.q.t||a.q.q)}</span>${a.q.t?`<span class="ds">${esc(a.q.q)}</span>`:""}${a.chose?`<span class="ds" style="color:var(--bad)">Tvoj odgovor: ${esc(a.chose)}</span>`:""}<span class="ds" style="color:var(--ok)">Pravilno: ${esc(a.q.o[a.q.a])}</span><span class="ds">${esc(a.q.e)}</span><span class="ref">${esc(a.q.r)}</span></div>`).join("")}</div>`:""}
+  </div>`;
+  const list=quiz.list,title=quiz.title,exam=quiz.exam,pool=quiz.pool;quiz=null;
+  document.getElementById("again").onclick=()=>exam?startExam():pool?startQuiz(izberi(pool,list.length),title,false,pool):startQuiz(shuffle(list),title);
+  document.getElementById("home").onclick=()=>location.hash="domov";
+  scrollTo(0,0);
+}
+
+/* ---------- izpit ---------- */
+function startExam(){startQuiz(shuffle(Q).slice(0,EXAM_N),"Izpit",true)}
+function viewExamIntro(){
+  const ex=st.hist.filter(h=>h.exam);const best=ex.reduce((m,h)=>Math.max(m,pct(h.ok,h.n)),0);
+  app.innerHTML=`<div class="screen" style="display:flex;flex-direction:column;gap:16px">
+  <div><div class="eyebrow">Teoretični del</div><h1>Izpitni način</h1></div>
+  <article class="card">
+    <div class="stats"><div class="stat" style="box-shadow:none;background:var(--surface-2)"><b>${EXAM_N}</b><span>vprašanj</span></div><div class="stat" style="box-shadow:none;background:var(--surface-2)"><b>${EXAM_MIN}:00</b><span>minut</span></div><div class="stat" style="box-shadow:none;background:var(--surface-2)"><b>${PASS} %</b><span>za uspeh</span></div></div>
+    <p class="muted">Med izpitom ne vidiš, ali je odgovor pravilen. Razlage dobiš na koncu. Ko čas poteče, se izpit odda sam.</p>
+    <button class="btn signal" id="go">Začni izpit</button>
+  </article>
+  ${ex.length?`<div class="eyebrow">Tvoji izpiti · najboljši ${best} %</div><div class="list">${ex.slice(0,8).map(h=>{const p=pct(h.ok,h.n),d=new Date(h.d);return `<div class="row"><span><strong class="${p>=PASS?"pass":"fail"}">${p>=PASS?"Opravljeno":"Ni opravljeno"}</strong><br><span class="muted" style="font-size:.85rem">${d.toLocaleDateString("sl-SI")}</span></span><span class="pct">${h.ok}/${h.n}</span></div>`}).join("")}</div>`:""}
+  </div>`;
+  document.getElementById("go").onclick=startExam;
+}
+
+/* ---------- znaki ---------- */
+let zmode="ucenje",zq=null;
+function viewZnaki(){
+  const groups=[...new Set(Z.map(z=>z.k))];let body;
+  if(zmode==="ucenje"){
+    body=`<div class="list">${groups.map(g=>`<div class="group-h">${esc(g)}</div>`+Z.filter(z=>z.k===g).map(z=>`<div class="sig"><span class="nm">${esc(z.ime)}${z.n?'<span class="tag n">Novo 2026</span>':""}</span><span class="ds">${esc(z.opis)}</span></div>`).join("")).join("")}</div>`;
+  }else{
+    if(!zq||zq.done===undefined)nextZ();const it=zq.item;
+    body=`<article class="card"><div class="qhead"><div class="eyebrow">Kateri znak je to?</div><span class="ref">${zq.ok}/${zq.n}</span></div><p class="qtext">${esc(it.opis)}</p>
+      <div class="opts">${zq.opts.map((o,j)=>`<button class="opt" data-j="${j}"><span class="k">${"ABCD"[j]}</span><span>${esc(o.ime)}</span></button>`).join("")}</div><div id="zfb"></div></article>`;
+  }
+  app.innerHTML=`<div class="screen" style="display:flex;flex-direction:column;gap:16px">
+  <div><div class="eyebrow">Priloga A</div><h1>Sodniški znaki</h1></div>
+  <div class="seg" role="group" aria-label="Način"><button id="m1" aria-pressed="${zmode==="ucenje"}">Učenje</button><button id="m2" aria-pressed="${zmode==="preizkus"}">Preizkus</button></div>
+  ${body}
+  <p class="note">Opisi gibov so povzetek. Nove znake 2026 preveri na slikah v uradnih pravilih.</p></div>`;
+  document.getElementById("m1").onclick=()=>{zmode="ucenje";viewZnaki()};
+  document.getElementById("m2").onclick=()=>{zmode="preizkus";viewZnaki()};
+  if(zmode==="preizkus")app.querySelectorAll(".opt").forEach(b=>b.onclick=()=>answerZ(+b.dataset.j));
+}
+function nextZ(){const pool=Z.filter(z=>!z.n),item=pool[Math.floor(Math.random()*pool.length)];
+  const wrong=shuffle(pool.filter(z=>z!==item&&z.k===item.k)).concat(shuffle(pool.filter(z=>z.k!==item.k))).slice(0,3);
+  zq=Object.assign(zq||{ok:0,n:0},{item,opts:shuffle([item].concat(wrong)),done:false})}
+function answerZ(j){if(zq.done)return;zq.done=true;const ok=zq.opts[j]===zq.item;zq.n++;if(ok)zq.ok++;record(zq.item.id,ok);
+  app.querySelectorAll(".opt").forEach((b,k)=>{b.disabled=true;if(zq.opts[k]===zq.item)b.classList.add("ok");else if(k===j)b.classList.add("bad")});
+  document.getElementById("zfb").innerHTML=`<button class="btn" id="znx">Naslednji znak</button>`;
+  const n=document.getElementById("znx");n.focus({preventScroll:true});n.onclick=()=>{nextZ();viewZnaki()}}
+
+/* ---------- profil ---------- */
+let confirmReset=false;
+function viewProfil(){
+  const p=st.profile,t=totals(),pp=pct(t.ok,t.n),s=streak();
+  const cats=Object.keys(KAT).map(c=>Object.assign({c},catStats(c)));
+  const weak=cats.filter(x=>x.n>=3).map(x=>Object.assign(x,{p:pct(x.ok,x.n)})).filter(x=>x.p<75).sort((a,b)=>a.p-b.p);
+  const zs=Z.reduce((a,z)=>{const it=st.items[z.id];if(it){a.ok+=it.ok;a.n+=it.n}return a},{ok:0,n:0});
+  const exams=st.hist.filter(h=>h.exam),passed=exams.filter(h=>pct(h.ok,h.n)>=PASS).length;
+  const days=[];for(let i=13;i>=0;i--){const d=new Date();d.setDate(d.getDate()-i);days.push({k:dayKey(d),v:st.days[dayKey(d)]||0,l:d.getDate()})}
+  const mx=Math.max(st.cilj,...days.map(d=>d.v));
+  app.innerHTML=`<div class="screen" style="display:flex;flex-direction:column;gap:16px">
+  <div class="card" style="flex-direction:row;align-items:center;gap:16px">
+    <div class="avatar big" style="background:${p.barva}">${esc(initials(p.ime))}</div>
+    <div style="min-width:0;flex:1"><h2 style="text-transform:none;font-size:1.6rem">${esc(p.ime)}</h2><p class="muted">${esc(p.rang)}</p>
+      <p class="muted" style="font-size:.85rem">Vadi od ${new Date(p.od||Date.now()).toLocaleDateString("sl-SI")}</p></div>
+    <button class="ghost" id="edit">Uredi</button>
+  </div>
+  <div class="stats">
+    <div class="stat"><b>${pp===null?"—":pp+" %"}</b><span>uspešnost</span></div>
+    <div class="stat"><b>${s}</b><span>dni zapored</span></div>
+    <div class="stat"><b>${passed}/${exams.length}</b><span>opravljenih izpitov</span></div>
+  </div>
+  <a href="#tekme" class="banner" style="text-decoration:none;color:inherit"><span class="avatar" style="background:var(--surface-2);color:var(--ink);width:42px;height:42px">${st.tekme.length}</span><div><b>Sojene tekme</b><span>${st.tekme.length?"Ta sezona: "+seasonGames().length+" · povprečna ocena "+avgOcena(st.tekme):"Še ni shranjenih tekem"}</span></div><span class="chev muted">›</span></a>
+  <div class="card"><div class="qhead"><h3>Zadnjih 14 dni</h3><span class="ref">cilj ${st.cilj}/dan</span></div>
+    <svg viewBox="0 0 280 92" width="100%" role="img" aria-label="Odgovori po dnevih">
+      <line x1="0" x2="280" y1="${76-st.cilj/mx*64}" y2="${76-st.cilj/mx*64}" style="stroke:var(--line)" stroke-dasharray="4 4"/>
+      ${days.map((d,i)=>{const h=d.v/mx*64;return `<rect x="${i*20+3}" y="${76-h}" width="14" height="${Math.max(h,1.5)}" rx="3" style="fill:${d.v>=st.cilj?"var(--ok)":d.v?"var(--signal)":"var(--track)"}"/><text x="${i*20+10}" y="90" font-size="8" text-anchor="middle" style="fill:var(--muted)" font-family="JetBrains Mono,monospace">${d.l}</text>`}).join("")}
+    </svg></div>
+  <div class="eyebrow">Šibka področja</div>
+  ${weak.length?`<div class="list">${weak.map(w=>`<button class="row" data-cat="${w.c}"><span><strong>${esc(KAT[w.c])}</strong></span><span class="pct">${w.p} %</span><span class="bar"><i class="${barClass(w.p)}" style="width:${w.p}%"></i></span></button>`).join("")}</div>`
+   :`<p class="note">${t.n<10?"Reši nekaj treningov, da se pokažejo šibka področja.":"Na nobenem področju nisi pod 75 %."}</p>`}
+  <div class="eyebrow">Po področjih · znaki ${pct(zs.ok,zs.n)===null?"—":pct(zs.ok,zs.n)+" %"}</div>
+  <div class="list">${cats.map(x=>{const q=pct(x.ok,x.n);return `<div class="row"><span><strong>${esc(KAT[x.c])}</strong> <span class="muted">· ${x.seen}/${x.tot}</span></span><span class="pct">${q===null?"—":q+" %"}</span><span class="bar"><i class="${barClass(q)}" style="width:${q||0}%"></i></span></div>`}).join("")}</div>
+  <div class="eyebrow">Nastavitve</div>
+  <div class="card">
+    <div class="field"><label>Videz</label><div class="seg" role="group" aria-label="Videz">${[["system","Sistem"],["light","Svetlo"],["dark","Temno"]].map(([v,l])=>`<button data-th="${v}" aria-pressed="${st.theme===v}">${l}</button>`).join("")}</div></div>
+    <div class="field"><label>Dnevni cilj</label><div class="seg" role="group" aria-label="Dnevni cilj">${[5,10,20,30].map(n=>`<button data-cilj="${n}" aria-pressed="${st.cilj===n}">${n}</button>`).join("")}</div></div>
+  </div>
+  ${installBlock(true)}
+  <div class="card"><h3>Varnostna kopija</h3><p class="muted" style="font-size:.92rem">Tekme, komentarji in napredek so shranjeni samo na tem telefonu. Kopijo shrani, preden zamenjaš telefon ali počistiš brskalnik.</p>
+    <div class="two"><button class="ghost" id="exp">Shrani kopijo</button><label class="ghost" style="text-align:center">Naloži kopijo<input type="file" id="imp" accept="application/json,.json" hidden></label></div>
+    <p class="muted" id="bmsg" style="font-size:.88rem" hidden></p></div>
+  <div class="confirm">${confirmReset?`<span>Izbrišem napredek pri treningu? Profil in tekme ostanejo.</span><button class="danger" id="yes">Izbriši</button><button class="ghost" id="no">Prekliči</button>`:`<button class="ghost" id="reset">Ponastavi napredek</button>`}</div>
+  <p class="note">Vsebina: Uradna košarkarska pravila 2024 (KZS) in spremembe FIBA 2026, veljavne od 1. 10. 2026. ${ALL.length} vprašanj, ${Z.length} znakov.</p>
+  </div>`;
+  document.getElementById("edit").onclick=()=>viewWelcome(true);
+  bindBackup();
+  app.querySelectorAll("[data-th]").forEach(b=>b.onclick=()=>{st.theme=b.dataset.th;themeTouched=true;save();applyTheme();viewProfil()});
+  app.querySelectorAll("[data-cilj]").forEach(b=>b.onclick=()=>{st.cilj=+b.dataset.cilj;save();viewProfil()});
+  const r=document.getElementById("reset");if(r)r.onclick=()=>{confirmReset=true;viewProfil()};
+  const y=document.getElementById("yes");if(y)y.onclick=()=>{st.items={};st.hist=[];st.days={};save();confirmReset=false;viewProfil()};
+  const n=document.getElementById("no");if(n)n.onclick=()=>{confirmReset=false;viewProfil()};
+  bindCats();bindInstall();
+}
+
+/* ---------- tekme ---------- */
+const VLOGE=["1. sodnik","2. sodnik","3. sodnik","Komisar","Zapisnikar","Časomerilec","Merilec napada"];
+let tv={mode:"list",id:null},tq="",confirmDel=false;
+const fmtDate=d=>{try{return new Date(d+"T12:00").toLocaleDateString("sl-SI",{day:"numeric",month:"numeric",year:"numeric"})}catch(e){return d}};
+function seasonStart(){const n=new Date(),y=n.getMonth()>=7?n.getFullYear():n.getFullYear()-1;return y+"-08-01"}
+const seasonGames=()=>st.tekme.filter(g=>g.datum>=seasonStart());
+function avgOcena(list){const r=list.filter(g=>g.ocena);return r.length?(r.reduce((a,g)=>a+g.ocena,0)/r.length).toFixed(1).replace(".",","):"—"}
+const sorted=()=>st.tekme.slice().sort((a,b)=>(b.datum+(b.ura||"")).localeCompare(a.datum+(a.ura||"")));
+const uniq=k=>[...new Set(st.tekme.map(g=>g[k]).filter(Boolean))];
+function viewTekme(){
+  const fab=document.getElementById("fab");if(fab)fab.remove();
+  if(tv.mode==="form")return tekmaForm();
+  if(tv.mode==="detail")return tekmaDetail();
+  const all=sorted(),q=tq.trim().toLowerCase();
+  const list=q?all.filter(g=>[g.domaci,g.gostje,g.tekmovanje,g.dvorana,g.kolegi,g.komentar].join(" ").toLowerCase().includes(q)):all;
+  const ss=seasonGames();
+  app.innerHTML=`<div class="screen" style="display:flex;flex-direction:column;gap:16px">
+  <div><div class="eyebrow">Dnevnik sojenja</div><h1>Tekme</h1></div>
+  <div class="stats">
+    <div class="stat"><b>${st.tekme.length}</b><span>vseh tekem</span></div>
+    <div class="stat"><b>${ss.length}</b><span>ta sezona</span></div>
+    <div class="stat"><b>${avgOcena(st.tekme)}</b><span>povprečna ocena</span></div>
+  </div>
+  ${st.tekme.length>3?`<input class="search" id="tq" type="search" placeholder="Išči ekipo, dvorano, komentar …" value="${esc(tq)}" aria-label="Išči tekme">`:""}
+  ${list.length?`<div class="list">${list.map(g=>{const d=new Date(g.datum+"T12:00");return `<button class="game" data-id="${g.id}">
+      <span class="date"><b>${d.getDate()}.</b>${d.getMonth()+1}. ${String(d.getFullYear()).slice(2)}</span>
+      <span class="teams"><strong>${esc(g.domaci)} – ${esc(g.gostje)}</strong><span>${esc([g.tekmovanje,g.vloga].filter(Boolean).join(" · "))}</span></span>
+      <span class="res">${g.rezD!==""&&g.rezG!==""?esc(g.rezD)+":"+esc(g.rezG):"—"}</span>
+      ${g.komentar?`<span class="cm">${esc(g.komentar)}</span>`:""}
+    </button>`}).join("")}</div>`
+   :`<div class="card" style="text-align:center;align-items:center">${q?`<p class="muted">Nobena tekma ne ustreza iskanju.</p>`:`<h3>Še ni shranjenih tekem</h3><p class="muted">Po vsaki tekmi zapiši ekipi, rezultat, svojo vlogo in komentar: kaj je šlo dobro, katere situacije so bile težke in kaj je rekel komisar.</p><button class="btn signal" id="first">Dodaj prvo tekmo</button>`}</div>`}
+  </div>`;
+  if(st.tekme.length){const b=document.createElement("button");b.className="fab";b.id="fab";b.textContent="+ Nova tekma";document.body.appendChild(b);b.onclick=()=>{tv={mode:"form",id:null};viewTekme();scrollTo(0,0)}}
+  const f=document.getElementById("first");if(f)f.onclick=()=>{tv={mode:"form",id:null};viewTekme()};
+  const s=document.getElementById("tq");if(s)s.oninput=()=>{tq=s.value;const pos=s.selectionStart;viewTekme();const n=document.getElementById("tq");n.focus();n.setSelectionRange(pos,pos)};
+  app.querySelectorAll("[data-id]").forEach(b=>b.onclick=()=>{tv={mode:"detail",id:b.dataset.id};confirmDel=false;viewTekme();scrollTo(0,0)});
+}
+let ocenaSel=0;
+function tekmaForm(){
+  const g=tv.id?st.tekme.find(x=>x.id===tv.id):null;
+  const v=g||{datum:dayKey(),ura:"",tekmovanje:(sorted()[0]||{}).tekmovanje||"",domaci:"",gostje:"",rezD:"",rezG:"",vloga:"1. sodnik",dvorana:"",kolegi:"",ocena:0,komentar:""};
+  ocenaSel=v.ocena||0;
+  app.innerHTML=`<div class="screen" style="display:flex;flex-direction:column;gap:16px">
+  <div class="top"><div><div class="eyebrow">Tekme</div><h1>${g?"Uredi tekmo":"Nova tekma"}</h1></div><button class="ghost" id="back">Prekliči</button></div>
+  <form class="card" id="tf" autocomplete="off">
+    <div class="two"><div class="field"><label for="t-datum">Datum</label><input id="t-datum" type="date" required value="${esc(v.datum)}"></div>
+      <div class="field"><label for="t-ura">Ura</label><input id="t-ura" type="time" value="${esc(v.ura||"")}"></div></div>
+    <div class="field"><label for="t-tek">Tekmovanje</label><input id="t-tek" list="dl-tek" maxlength="60" value="${esc(v.tekmovanje)}" placeholder="npr. 2. SKL, U16 fantje"></div>
+    <div class="field"><label for="t-dom">Domača ekipa</label><input id="t-dom" list="dl-ek" required maxlength="50" value="${esc(v.domaci)}"></div>
+    <div class="field"><label for="t-gos">Gostujoča ekipa</label><input id="t-gos" list="dl-ek" required maxlength="50" value="${esc(v.gostje)}"></div>
+    <div class="two"><div class="field"><label for="t-rd">Točke domači</label><input id="t-rd" type="number" inputmode="numeric" min="0" max="250" value="${esc(v.rezD)}"></div>
+      <div class="field"><label for="t-rg">Točke gostje</label><input id="t-rg" type="number" inputmode="numeric" min="0" max="250" value="${esc(v.rezG)}"></div></div>
+    <div class="field"><label for="t-vl">Moja vloga</label><select id="t-vl">${VLOGE.map(x=>`<option${x===v.vloga?" selected":""}>${x}</option>`).join("")}</select></div>
+    <div class="field"><label for="t-dv">Dvorana in kraj</label><input id="t-dv" list="dl-dv" maxlength="60" value="${esc(v.dvorana)}"></div>
+    <div class="field"><label for="t-ko">Sodniški kolegi in komisar</label><input id="t-ko" maxlength="120" value="${esc(v.kolegi)}" placeholder="npr. M. Kranjc (2.), komisar J. Horvat"></div>
+    <div class="field"><label>Ocena mojega sojenja</label><div class="stars" role="group" aria-label="Ocena">${[1,2,3,4,5].map(n=>`<button type="button" data-o="${n}" aria-pressed="${n===ocenaSel}">${n}</button>`).join("")}</div></div>
+    <div class="field"><label for="t-kom">Moj komentar</label><textarea id="t-kom" maxlength="4000" placeholder="Kaj je šlo dobro? Katere situacije so bile težke? Kaj je rekel komisar? Kaj izboljšam na naslednji tekmi?">${esc(v.komentar)}</textarea></div>
+    <button class="btn signal" type="submit">${g?"Shrani spremembe":"Shrani tekmo"}</button>
+  </form>
+  <datalist id="dl-tek">${uniq("tekmovanje").map(x=>`<option value="${esc(x)}">`).join("")}</datalist>
+  <datalist id="dl-ek">${[...new Set(uniq("domaci").concat(uniq("gostje")))].map(x=>`<option value="${esc(x)}">`).join("")}</datalist>
+  <datalist id="dl-dv">${uniq("dvorana").map(x=>`<option value="${esc(x)}">`).join("")}</datalist>
+  </div>`;
+  app.querySelectorAll("[data-o]").forEach(b=>b.onclick=()=>{const n=+b.dataset.o;ocenaSel=ocenaSel===n?0:n;app.querySelectorAll("[data-o]").forEach(x=>x.setAttribute("aria-pressed",+x.dataset.o===ocenaSel))});
+  document.getElementById("back").onclick=()=>{tv=g?{mode:"detail",id:g.id}:{mode:"list",id:null};viewTekme()};
+  document.getElementById("tf").onsubmit=e=>{e.preventDefault();const val=id=>document.getElementById(id).value.trim();
+    const rec={id:g?g.id:"t"+Date.now().toString(36)+Math.random().toString(36).slice(2,6),datum:val("t-datum"),ura:val("t-ura"),tekmovanje:val("t-tek"),domaci:val("t-dom"),gostje:val("t-gos"),
+      rezD:val("t-rd"),rezG:val("t-rg"),vloga:val("t-vl"),dvorana:val("t-dv"),kolegi:val("t-ko"),ocena:ocenaSel,komentar:document.getElementById("t-kom").value.trim(),
+      ustvarjeno:g?g.ustvarjeno:Date.now(),urejeno:Date.now()};
+    if(g)st.tekme[st.tekme.findIndex(x=>x.id===g.id)]=rec;else st.tekme.push(rec);save();
+    tv={mode:"detail",id:rec.id,saved:true};viewTekme();scrollTo(0,0)};
+}
+function tekmaDetail(){
+  const g=st.tekme.find(x=>x.id===tv.id);if(!g){tv={mode:"list"};return viewTekme()}
+  const saved=tv.saved;tv.saved=false;
+  app.innerHTML=`<div class="screen" style="display:flex;flex-direction:column;gap:16px">
+  <div class="top"><button class="ghost" id="back">‹ Tekme</button><button class="ghost" id="ed">Uredi</button></div>
+  ${saved?`<p class="note" style="border-style:solid;color:var(--ok)">Tekma je shranjena.</p>`:""}
+  <article class="card">
+    <div class="eyebrow">${esc([fmtDate(g.datum)+(g.ura?" ob "+g.ura:""),g.tekmovanje].filter(Boolean).join(" · "))}</div>
+    <div class="scoreline"><span class="tm">${esc(g.domaci)}</span><span class="sc">${g.rezD!==""&&g.rezG!==""?esc(g.rezD)+" : "+esc(g.rezG):"– : –"}</span><span class="tm">${esc(g.gostje)}</span></div>
+    <dl class="kv">
+      <dt>Vloga</dt><dd>${esc(g.vloga)}</dd>
+      ${g.dvorana?`<dt>Dvorana</dt><dd>${esc(g.dvorana)}</dd>`:""}
+      ${g.kolegi?`<dt>Kolegi</dt><dd>${esc(g.kolegi)}</dd>`:""}
+      <dt>Ocena</dt><dd>${g.ocena?`<span class="mono" style="font-weight:700;color:var(--signal)">${g.ocena}/5</span>`:"Brez ocene"}</dd>
+    </dl>
+  </article>
+  <article class="card"><h3>Moj komentar</h3>${g.komentar?`<p class="comment">${esc(g.komentar)}</p>`:`<p class="muted">Komentarja še ni. Tapni »Uredi« in ga dodaj.</p>`}
+    <p class="ref">Zadnja sprememba ${new Date(g.urejeno||g.ustvarjeno).toLocaleString("sl-SI",{day:"numeric",month:"numeric",year:"numeric",hour:"2-digit",minute:"2-digit"})}</p></article>
+  <div class="confirm">${confirmDel?`<span>Izbrišem to tekmo s komentarjem?</span><button class="danger" id="yes">Izbriši</button><button class="ghost" id="no">Prekliči</button>`:`<button class="ghost" id="del" style="color:var(--bad)">Izbriši tekmo</button>`}</div>
+  </div>`;
+  document.getElementById("back").onclick=()=>{tv={mode:"list"};viewTekme();scrollTo(0,0)};
+  document.getElementById("ed").onclick=()=>{tv={mode:"form",id:g.id};viewTekme();scrollTo(0,0)};
+  const d=document.getElementById("del");if(d)d.onclick=()=>{confirmDel=true;tekmaDetail()};
+  const y=document.getElementById("yes");if(y)y.onclick=()=>{st.tekme=st.tekme.filter(x=>x.id!==g.id);save();confirmDel=false;tv={mode:"list"};viewTekme()};
+  const n=document.getElementById("no");if(n)n.onclick=()=>{confirmDel=false;tekmaDetail()};
+}
+
+/* ---------- varnostna kopija ---------- */
+function bindBackup(){
+  const msg=t=>{const m=document.getElementById("bmsg");m.hidden=false;m.textContent=t};
+  document.getElementById("exp").onclick=()=>{try{
+    const blob=new Blob([JSON.stringify({app:"refs-kzs",v:2,izvoz:new Date().toISOString(),data:st},null,1)],{type:"application/json"});
+    const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="refs-kzs-"+dayKey()+".json";document.body.appendChild(a);a.click();a.remove();
+    msg("Kopija je shranjena v Prenose.")}catch(e){msg("Kopije ni bilo mogoče shraniti v tem brskalniku.")}};
+  document.getElementById("imp").onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();
+    r.onload=()=>{try{const j=JSON.parse(r.result),d=j.data||j;if(!d||!d.items)throw 0;st=Object.assign(blank(),d);save();applyTheme();viewProfil();
+      const m=document.getElementById("bmsg");m.hidden=false;m.textContent="Kopija je naložena: "+st.tekme.length+" tekem."}catch(err){msg("Datoteka ni kopija aplikacije refs KZS.")}};r.readAsText(f)};
+}
+
+/* ---------- usmerjanje ---------- */
+let cur="domov";
+function route(){
+  applyTheme();
+  if(!st.profile){viewWelcome(false);return}
+  nav.hidden=false;document.body.classList.remove("bare");
+  const v=(location.hash||"#domov").slice(1),prev=cur;cur=v;
+  const fab=document.getElementById("fab");if(fab&&v!=="tekme")fab.remove();
+  const tab=v==="znaki"?"kviz":v;
+  nav.querySelectorAll("a").forEach(a=>{if(a.dataset.v===tab)a.setAttribute("aria-current","page");else a.removeAttribute("aria-current")});
+  if(quiz&&!quiz.keep&&!(v==="kviz"&&!quiz.exam)&&!(v==="izpit"&&quiz.exam)){clearInterval(tick);quiz=null}
+  if(quiz)quiz.keep=false;
+  if(v==="kviz"){quiz&&!quiz.exam?renderQ():viewQuizMenu()}
+  else if(v==="izpit"){quiz&&quiz.exam?renderQ():viewExamIntro()}
+  else if(v==="znaki")viewZnaki();
+  else if(v==="profil")viewProfil();
+  else if(v==="tekme"){if(prev!=="tekme"&&tv.mode!=="form")tv={mode:"list"};viewTekme()}
+  else{cur="domov";viewHome()}
+  scrollTo(0,0);
+}
+window.addEventListener("hashchange",route);
+nav.addEventListener("click",e=>{const a=e.target.closest("a");if(a&&a.getAttribute("href")===location.hash){e.preventDefault();if(quiz&&!quiz.exam){quiz=null}tv={mode:"list"};route()}});
+route();
+if("serviceWorker" in navigator&&!/claude|anthropic/.test(location.hostname)){navigator.serviceWorker.register("sw.js").catch(()=>{})}
+})();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,27 @@
+{
+  "name": "refs KZS",
+  "short_name": "refs KZS",
+  "description": "Trening košarkarskih sodnikov po pravilih FIBA 2026: kviz, izpit, situacije, sodniški znaki in profil.",
+  "lang": "sl",
+  "id": "./",
+  "start_url": "./index.html#domov",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#14324a",
+  "theme_color": "#14324a",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
