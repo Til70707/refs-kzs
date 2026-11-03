@@ -1,5 +1,5 @@
-const CACHE = "refs-kzs-v8";
-const FILES = ["./", "./index.html", "./data.js", "./manifest.json", "./icon-192.png", "./icon-512.png", "./apple-touch-icon.png", "./favicon-32.png"];
+const CACHE = "refs-kzs-v9";
+const FILES = ["./", "./index.html", "./data.js", "./manifest.json", "./icon-192.png", "./icon-512.png", "./apple-touch-icon.png", "./favicon-32.png"].concat(Array.from({length:72},(_,i)=>"./znaki/z"+String(i+1).padStart(2,"0")+".jpg"));
 
 self.addEventListener("install", e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(FILES)).then(() => self.skipWaiting()));

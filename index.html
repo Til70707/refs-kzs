@@ -145,6 +145,11 @@ button{cursor:pointer}
 .sig{display:flex;flex-direction:column;gap:2px;padding:12px 14px;border-top:1px solid var(--line)}
 .sig .nm{font-weight:700;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
 .sig .ds{color:var(--muted);font-size:.95rem}
+.sigrow{flex-direction:row;align-items:center;gap:12px;width:100%;text-align:left;background:none;border:0;border-top:1px solid var(--line);cursor:zoom-in}
+.sigtxt{display:flex;flex-direction:column;gap:2px;flex:1;min-width:0}
+.zthumb{width:64px;height:88px;object-fit:cover;object-position:center top;border-radius:8px;flex:none;background:var(--surface-2)}
+.zbigwrap{border:0;padding:0;background:var(--surface-2);border-radius:12px;display:flex;justify-content:center;cursor:zoom-in}
+.zbig{max-height:260px;max-width:100%;width:auto;border-radius:12px;display:block}
 .group-h{padding:10px 14px 6px;font-family:var(--f-display);font-weight:700;text-transform:uppercase;letter-spacing:.1em;font-size:.8rem;color:var(--muted);background:var(--surface-2)}
 
 /* obrazci */
@@ -238,7 +243,7 @@ const KEY="kzs-sodniki-v2";
 const app=document.getElementById("app"),nav=document.getElementById("nav");
 const Q=window.VPRASANJA.map((x,i)=>Object.assign({id:"q"+i},x));
 const S=window.SITUACIJE.map((x,i)=>Object.assign({id:"s"+i},x));
-const Z=window.ZNAKI.map((x,i)=>Object.assign({id:"z"+i},x));
+const Z=window.ZNAKI.map(x=>Object.assign({id:"zn"+x.n},x));
 const KAT=window.KAT, ALL=Q.concat(S);
 const RANGI=["Sodnik pripravnik","Sodnik","Regionalni sodnik","Medregionalni sodnik","Zvezni sodnik","Mednarodni sodnik (FIBA)","Inštruktor","Komisar","Drugo"];
 const BARVE=["#14324a","#e36414","#1d7a4c","#6d45c9","#b3261e","#0e7490"];
@@ -467,31 +472,35 @@ function viewExamIntro(){
 
 /* ---------- znaki ---------- */
 let zmode="ucenje",zq=null;
+const zImg=(z,cls)=>`<img class="${cls}" src="${z.img}" alt="Znak: ${esc(z.ime)}" loading="lazy" decoding="async">`;
 function viewZnaki(){
   const groups=[...new Set(Z.map(z=>z.k))];let body;
   if(zmode==="ucenje"){
-    body=`<div class="list">${groups.map(g=>`<div class="group-h">${esc(g)}</div>`+Z.filter(z=>z.k===g).map(z=>`<div class="sig"><span class="nm">${esc(z.ime)}${z.n?'<span class="tag n">Novo 2026</span>':""}</span><span class="ds">${esc(z.opis)}</span></div>`).join("")).join("")}</div>`;
+    body=`<div class="list">${groups.map(g=>`<div class="group-h">${esc(g)}</div>`+Z.filter(z=>z.k===g).map(z=>`<button class="sig sigrow" data-zn="${z.n}" aria-label="${esc(z.ime)}: povečaj sliko"><span class="sigtxt"><span class="nm">${esc(z.ime)}${z.nov?'<span class="tag n">Novo 2026</span>':""}</span><span class="ds">${esc(z.opis)}</span></span>${zImg(z,"zthumb")}</button>`).join("")).join("")}</div>`;
   }else{
     if(!zq||zq.done===undefined)nextZ();const it=zq.item;
-    body=`<article class="card"><div class="qhead"><div class="eyebrow">Kateri znak je to?</div><span class="ref">${zq.ok}/${zq.n}</span></div><p class="qtext">${esc(it.opis)}</p>
+    body=`<article class="card"><div class="qhead"><div class="eyebrow">Kateri znak je to?</div><span class="ref">${zq.ok}/${zq.cnt}</span></div>
+      <button class="zbigwrap" data-zn="${it.n}" aria-label="Povečaj sliko">${zImg(it,"zbig")}</button>
       <div class="opts">${zq.opts.map((o,j)=>`<button class="opt" data-j="${j}"><span class="k">${"ABCD"[j]}</span><span>${esc(o.ime)}</span></button>`).join("")}</div><div id="zfb"></div></article>`;
   }
   app.innerHTML=`<div class="screen" style="display:flex;flex-direction:column;gap:16px">
-  <div><div class="eyebrow">Priloga A</div><h1>Sodniški znaki</h1></div>
+  <div><div class="eyebrow">Priloga A · pravila 2026</div><h1>Sodniški znaki</h1></div>
   <div class="seg" role="group" aria-label="Način"><button id="m1" aria-pressed="${zmode==="ucenje"}">Učenje</button><button id="m2" aria-pressed="${zmode==="preizkus"}">Preizkus</button></div>
   ${body}
-  <p class="note">Opisi gibov so povzetek. Nove znake 2026 preveri na slikah v uradnih pravilih.</p></div>`;
+  <p class="note">Znaki, opisi in slike: Uradna košarkarska pravila 2026, Priloga A (KZS, slike FIBA). Tapni znak za večjo sliko.</p></div>`;
   document.getElementById("m1").onclick=()=>{zmode="ucenje";viewZnaki()};
   document.getElementById("m2").onclick=()=>{zmode="preizkus";viewZnaki()};
+  app.querySelectorAll("[data-zn]").forEach(b=>b.onclick=()=>{const z=Z.find(x=>x.n===+b.dataset.zn);const reveal=zmode==="ucenje"||(zq&&zq.done);
+    openLightbox(zImg(z,"")+(reveal?`<p style="color:var(--muted);margin:8px 4px 2px;font-size:.95rem">${esc(z.opis)}</p>`:""),reveal?z.ime:"Kateri znak je to?")});
   if(zmode==="preizkus")app.querySelectorAll(".opt").forEach(b=>b.onclick=()=>answerZ(+b.dataset.j));
 }
-function nextZ(){const pool=Z.filter(z=>!z.n),item=pool[Math.floor(Math.random()*pool.length)];
+function nextZ(){const pool=Z.filter(z=>z.k!=="Številke igralcev"),item=pool[Math.floor(Math.random()*pool.length)];
   const wrong=shuffle(pool.filter(z=>z!==item&&z.k===item.k)).concat(shuffle(pool.filter(z=>z.k!==item.k))).slice(0,3);
-  zq=Object.assign(zq||{ok:0,n:0},{item,opts:shuffle([item].concat(wrong)),done:false})}
-function answerZ(j){if(zq.done)return;zq.done=true;const ok=zq.opts[j]===zq.item;zq.n++;if(ok)zq.ok++;record(zq.item.id,ok);
+  zq=Object.assign(zq||{ok:0,cnt:0},{item,opts:shuffle([item].concat(wrong)),done:false})}
+function answerZ(j){if(zq.done)return;zq.done=true;const ok=zq.opts[j]===zq.item;zq.cnt++;if(ok)zq.ok++;record(zq.item.id,ok);
   app.querySelectorAll(".opt").forEach((b,k)=>{b.disabled=true;if(zq.opts[k]===zq.item)b.classList.add("ok");else if(k===j)b.classList.add("bad")});
-  document.getElementById("zfb").innerHTML=`<button class="btn" id="znx">Naslednji znak</button>`;
-  const n=document.getElementById("znx");n.focus({preventScroll:true});n.onclick=()=>{nextZ();viewZnaki()}}
+  document.getElementById("zfb").innerHTML=`<div class="explain ${ok?"":"wrong"}"><b style="color:var(${ok?"--ok":"--bad"})">${ok?"Pravilno":"Napačno"}: ${esc(zq.item.ime)}</b><p>${esc(zq.item.opis)}</p></div><button class="btn" id="znx" style="margin-top:8px">Naslednji znak</button>`;
+  const n=document.getElementById("znx");n.focus({preventScroll:true});n.scrollIntoView({block:"nearest",behavior:"smooth"});n.onclick=()=>{nextZ();viewZnaki();scrollTo(0,0)}}
 
 /* ---------- profil ---------- */
 let confirmReset=false;
